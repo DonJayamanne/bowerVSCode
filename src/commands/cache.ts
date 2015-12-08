@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as bower from 'bower';
 import CodeAdapter from './../adapter';
 import ProgressIndicator from './../progressIndicator';
 
@@ -10,6 +9,7 @@ import ProgressIndicator from './../progressIndicator';
 export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndicator) {
 	var cwd = vscode.workspace.rootPath;
 	process.chdir(cwd);
+	var bower = require('bower');
 
 	progressIndicator.beginTask("bower list");
 	

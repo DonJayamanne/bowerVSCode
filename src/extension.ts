@@ -2,8 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import PromptFactory from './prompts/factory';
-import * as bower from 'bower';
-import * as inquirer 'inquirer';
 import CodeAdapter from './adapter';
 import ProgressIndicator from './progressIndicator';
 import init from './commands/init';
