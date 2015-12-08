@@ -83,6 +83,7 @@ export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndica
 export function cleanEverythingFromCache(adapter: CodeAdapter, progressIndicator:ProgressIndicator) {
 	var cwd = vscode.workspace.rootPath;
 	process.chdir(cwd);
+	var bower = require('bower');
 
 	vscode.window.showWarningMessage("Are you sure you want to clear the bower cache?", "Yes").then(function(cmd) {
 		if (cmd === "Yes") {
