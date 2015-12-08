@@ -1,7 +1,8 @@
 # Bower
 
 Provides access to most of the Bower commands from within Visual Studio Code
-Interactive prompts built into the IDE.
+
+Bower Command interactive prompts built into the IDE.
 
 ##Features
 * Create bower.json using interactive prompts (bower init)
@@ -12,6 +13,8 @@ Interactive prompts built into the IDE.
 * Search and install packages (bower search, bower install package)
 * Cache management (bower cache list, bower cache clear)
 
+Press F1 and select/type "Bower" and pick a bower command.
+ 
 ![Image of Command](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/command.png)
 
 ![Image of Sub Command](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/bowercommands.png)
