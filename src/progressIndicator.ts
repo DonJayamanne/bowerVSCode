@@ -39,8 +39,7 @@ export default class ProgressIndicator {
 	private displayProgressIndicator() {
 		this.setMessage();
 		this.hideProgressIndicator();
-		//this.onDisplayProgressIndicator();
-		this._interval = setInterval(() => this.onDisplayProgressIndicator(), 200);
+		this._interval = setInterval(() => this.onDisplayProgressIndicator(), 100);
 	}
 	private hideProgressIndicator() {
 		if (this._interval) {

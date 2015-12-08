@@ -16,7 +16,7 @@ export default function restore(adapter: CodeAdapter, progressIndicator:Progress
 		.install()
 		.on('error', function(ex) {
 			progressIndicator.endTask("bower install");
-			console.log(ex);
+			adapter.log(ex);
 			vscode.window.showErrorMessage('bower install failed! View Output window for further details');
 		}).on('end', function(msg) {
 			progressIndicator.endTask("bower install");

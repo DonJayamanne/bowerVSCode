@@ -14,7 +14,7 @@ export default function init(adapter: CodeAdapter, progressIndicator: ProgressIn
 	bower.commands
 		.init({ interactive: true })
 		.on('error', function(ex) {
-			console.log(ex);
+			adapter.log(ex);
 			vscode.window.showErrorMessage('bower init failed! View Output window for further details');
 		}).on('end', function(msg) {
 			vscode.window.showInformationMessage('bower init completed!');

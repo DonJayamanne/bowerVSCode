@@ -15,15 +15,15 @@ Bower Command interactive prompts built into the IDE.
 
 Press F1 and select/type "Bower" and pick a bower command.
  
-![Image of Command](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/command.png)
+![Image of Command](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/commands.gif)
 
-![Image of Sub Command](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/bowercommands.png)
+![Image of Init](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/init.gif)
 
-![Image of Install](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/bowerinstall.png)
+![Image of Install](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/install.gif)
 
-![Image of Search](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/bowersearch.png)
+![Image of Search](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/searchandinstall.gif)
 
-![Image of Search Results](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/bowersearchresults.png)
+![Image of Uninstall](https://raw.githubusercontent.com/DonJayamanne/bowerVSCode/master/images/uninstall.gif)
 
 
 ## Source

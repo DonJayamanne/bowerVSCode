@@ -24,7 +24,7 @@ export function search(adapter: CodeAdapter, progressIndicator: ProgressIndicato
 				.search(searchString)
 				.on('error', function(installed) {
 					progressIndicator.endTask("bower search");
-					console.log(installed);
+					adapter.log(installed);
 					vscode.window.showErrorMessage('bower search failed! View Output window for further details');
 				}).on('end', function(results) {
 					progressIndicator.endTask("bower search");
@@ -74,7 +74,7 @@ export function search(adapter: CodeAdapter, progressIndicator: ProgressIndicato
 			.install([name], options)
 			.on('error', function(installed) {
 				progressIndicator.endTask("bower install");
-				console.log(installed);
+				adapter.log(installed);
 				vscode.window.showErrorMessage('bower install failed! View Output window for further details');
 			}).on('end', function() {
 				progressIndicator.endTask("bower install");

@@ -17,7 +17,7 @@ export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndica
 		.list()
 		.on('error', function(ex) {
 			progressIndicator.endTask("bower list");
-			console.log(ex);
+			adapter.log(ex);
 			vscode.window.showErrorMessage('bower cache list failed! View Output window for further details');
 		}).on('end', function(installed) {
 			progressIndicator.endTask("bower list");
@@ -69,7 +69,7 @@ export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndica
 			.clean([name])
 			.on('error', function(ex) {
 				progressIndicator.endTask("bower cache clear");
-				console.log(ex);
+				adapter.log(ex);
 				vscode.window.showErrorMessage('Failed to remove an item from cache! View Output window for further details');
 			}).on('end', function() {
 				progressIndicator.endTask("bower cache clear");
@@ -97,7 +97,7 @@ export function cleanEverythingFromCache(adapter: CodeAdapter, progressIndicator
 			.clean()
 			.on('error', function(ex) {
 				progressIndicator.endTask("bower cache clear");
-				console.log(ex);
+				adapter.log(ex);
 				vscode.window.showErrorMessage('Failed to clean the bower cache! View Output window for further details');
 			}).on('end', function() {
 				progressIndicator.endTask("bower cache clear");

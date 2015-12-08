@@ -14,7 +14,7 @@ export default function uninstall(adapter: CodeAdapter, progressIndicator:Progre
 	bower.commands
 		.list({paths:true}, { offline: true })
 		.on('error', function(installed) {
-			console.log(installed);
+			adapter.log(installed);
 			vscode.window.showErrorMessage('bower uninstall failed! View Output window for further details');
 		}).on('end', function(installed) {
 			var installedPackages = Object.keys(installed);
@@ -22,7 +22,6 @@ export default function uninstall(adapter: CodeAdapter, progressIndicator:Progre
 				label: item, 
 				description: Array.isArray(installed[item]) ? installed[item][0] : installed[item], 
 				name: item } });
-			//console.log(installed);
 			displayPackageList(packages);
 		});
 
@@ -49,8 +48,6 @@ export default function uninstall(adapter: CodeAdapter, progressIndicator:Progre
 				return;
 			}
 			var options: any = {};
-			// options.save = true;
-			// options["save-dev"] = true;
 			if (action.label === UNINSTALL) {
 				options.save = true;
 			}
@@ -71,30 +68,16 @@ export default function uninstall(adapter: CodeAdapter, progressIndicator:Progre
 	}
 	
 	function uninstallPackage(name: string, options: any) {
-		// var reject:(any)=>void = null;
-		// var resolve:(any)=>void = null;
-		// var def = new Promise((res, rej)=>{
-		// 	resolve = res;
-		// 	reject =rej;
-		// });
-		
 		bower.commands
 			.uninstall([name], options)
 			.on('error', function(ex) {
-				console.log(ex);
+				adapter.log(ex);
 				vscode.window.showErrorMessage('bower uninstall failed! View Output window for further details');
-				// reject(ex);
 			}).on('end', function(msg) {
-				// if (showMessage){
 					vscode.window.showInformationMessage("bower package '" + name + "' successfully uninstalled!");
-				// }
-				// resolve(msg);
 			}).on('log', function(msg) {
-				//console.log(msg);
 			}).on('prompt', function(prompts, callback) {
 				adapter.prompt(prompts, callback);
 			});
-			
-		// return def;
 	}
 }

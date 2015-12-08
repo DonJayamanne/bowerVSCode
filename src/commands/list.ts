@@ -14,14 +14,13 @@ export default function list(adapter: CodeAdapter, progressIndicator:ProgressInd
 	bower.commands
 		.list({ xrelative: true, xpaths: true }, { offline: false })
 		.on('error', function(installed) {
-			console.log(installed);
+			adapter.log(installed);
 			vscode.window.showErrorMessage('bower install failed! View Output window for further details');
 		}).on('end', function(installed) {
-			//vscode.window.showInformationMessage('bower install completed!');
-			console.log(installed);
-			console.log(installed.dependencies);
+			adapter.log(installed);
+			adapter.log(installed.dependencies);
 		}).on('log', function(message) {
-			console.log(message);
+			adapter.log(message);
 		})
 		.on('prompt', function(prompts, callback) {
 			adapter.prompt(prompts, callback);

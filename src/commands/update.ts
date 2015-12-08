@@ -16,7 +16,7 @@ export default function update(adapter: CodeAdapter, progressIndicator: Progress
 		.list({ paths: true }, { offline: true })
 		.on('error', function(installed) {
 			progressIndicator.endTask("bower list");
-			console.log(installed);
+			adapter.log(installed);
 			vscode.window.showErrorMessage('bower uninstall failed! View Output window for further details');
 		}).on('end', function(installed) {
 			progressIndicator.endTask("bower list");
@@ -45,7 +45,7 @@ export default function update(adapter: CodeAdapter, progressIndicator: Progress
 			.update(pkgNames)
 			.on('error', function(installed) {
 				progressIndicator.endTask("bower update");
-				console.log(installed);
+				adapter.log(installed);
 				vscode.window.showErrorMessage('bower update failed! View Output window for further details');
 			}).on('end', function() {
 				progressIndicator.endTask("bower update");
