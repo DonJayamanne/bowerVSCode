@@ -7,8 +7,6 @@ import ProgressIndicator from './../progressIndicator';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndicator) {
-	var cwd = vscode.workspace.rootPath;
-	process.chdir(cwd);
 	var bower = require('bower');
 
 	progressIndicator.beginTask("bower list");
@@ -17,8 +15,10 @@ export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndica
 		.list()
 		.on('error', function(ex) {
 			progressIndicator.endTask("bower list");
-			adapter.log(ex);
+			adapter.logError(ex);
 			vscode.window.showErrorMessage('bower cache list failed! View Output window for further details');
+		}).on('log', function(msg) {
+			adapter.log(msg);
 		}).on('end', function(installed) {
 			progressIndicator.endTask("bower list");
 			var packages = installed.map(pkg=> {
@@ -30,7 +30,10 @@ export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndica
 				});
 				
 			displayCachedPackageList(packages);
+		}).on('prompt', function(prompts, callback) {
+			adapter.prompt(prompts, callback);
 		});
+
 
 	function displayCachedPackageList(packages: vscode.QuickPickItem[]) {
 		vscode.window.showQuickPick(packages, { placeHolder: "" }).then(function(item) {
@@ -69,8 +72,10 @@ export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndica
 			.clean([name])
 			.on('error', function(ex) {
 				progressIndicator.endTask("bower cache clear");
-				adapter.log(ex);
+				adapter.logError(ex);
 				vscode.window.showErrorMessage('Failed to remove an item from cache! View Output window for further details');
+			}).on('log', function(msg) {
+				adapter.log(msg);
 			}).on('end', function() {
 				progressIndicator.endTask("bower cache clear");
 				vscode.window.showInformationMessage("bower package '" + name + "' successfully removed from cache!");
@@ -81,8 +86,6 @@ export function listCache(adapter: CodeAdapter, progressIndicator:ProgressIndica
 }
 
 export function cleanEverythingFromCache(adapter: CodeAdapter, progressIndicator:ProgressIndicator) {
-	var cwd = vscode.workspace.rootPath;
-	process.chdir(cwd);
 	var bower = require('bower');
 
 	vscode.window.showWarningMessage("Are you sure you want to clear the bower cache?", "Yes").then(function(cmd) {
@@ -91,14 +94,16 @@ export function cleanEverythingFromCache(adapter: CodeAdapter, progressIndicator
 		}
 	});
 
-	function clearBowerCache() {
+	function clearBowerCache() {		
 		progressIndicator.beginTask("bower cache clear");
 		bower.commands.cache
 			.clean()
-			.on('error', function(ex) {
+			.on('error', function(error) {
 				progressIndicator.endTask("bower cache clear");
-				adapter.log(ex);
+				adapter.logError(error);
 				vscode.window.showErrorMessage('Failed to clean the bower cache! View Output window for further details');
+			}).on('log', function(msg) {
+				adapter.log(msg);
 			}).on('end', function() {
 				progressIndicator.endTask("bower cache clear");
 				vscode.window.showInformationMessage("bower cache cleared successfully!");

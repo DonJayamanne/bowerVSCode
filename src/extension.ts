@@ -11,6 +11,8 @@ import uninstall from './commands/uninstall';
 import update from './commands/update';
 import * as bowerCache from './commands/cache';
 import * as bowerSearch from './commands/search';
+import * as path from 'path';
+import * as fs from 'fs';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -34,11 +36,6 @@ export function activate(context: vscode.ExtensionContext) {
 			"description": "Restore packages defined in bower.json (bower install)",
 			"handler": function() { restore(adapter, progressIndicator); }
 		},
-		// {
-		// 	"label": "Bower List",
-		// 	"description": "",
-		// 	"handler": function() { list(adapter); }
-		// },
 		{
 			"label": "Bower Search and Install",
 			"description": "Search for a package and install it",
@@ -71,10 +68,49 @@ export function activate(context: vscode.ExtensionContext) {
 			if (!cmd) {
 				return;
 			}
-			adapter.clearLog();
-			cmd.handler();
+			//var cwd2 = vscode.workspace.rootPath;
+			var rootPath = vscode.workspace.rootPath;
+			var currentFilePath = null;
+			if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document) {
+				currentFilePath = vscode.window.activeTextEditor.document.fileName;
+			}
+			getBowerConfigDir(rootPath, currentFilePath).then(cwd=> {
+				process.chdir(cwd);
+
+				adapter.clearLog();
+				adapter.showLog();
+				cmd.handler();
+			});
 		});
 	});
 
 	context.subscriptions.push(disposable);
+}
+
+function getBowerConfigDirRecursively(recursiveDepth: number, rootDir: string, currentDir: string, resolve: (any?) => void) {
+	var relativePath = path.relative(rootDir, currentDir);
+	if (relativePath.length === 0 || relativePath.startsWith("..")) {
+		resolve(rootDir);
+		return;
+	}
+
+	fs.exists(path.join(currentDir, "bower.json"), (exists) => {
+		if (exists || recursiveDepth >= 20) {
+			resolve(currentDir);
+		}
+		else {
+			getBowerConfigDirRecursively(recursiveDepth++, rootDir, path.join(currentDir, "../"), resolve);
+		}
+	});
+}
+
+function getBowerConfigDir(rootPath, currentFilePath): Thenable<string> {
+	return new Promise<string>((resolve, reject) => {
+		if (currentFilePath) {
+			getBowerConfigDirRecursively(1, rootPath, currentFilePath, resolve);
+		}
+		else {
+			resolve(vscode.workspace.rootPath);
+		}
+	});
 }

@@ -7,23 +7,31 @@ import ProgressIndicator from './../progressIndicator';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export default function uninstall(adapter: CodeAdapter, progressIndicator:ProgressIndicator) {
-	var cwd = vscode.workspace.rootPath;
-	process.chdir(cwd);
 	var bower = require('bower');
 
 	bower.commands
 		.list({paths:true}, { offline: true })
-		.on('error', function(installed) {
-			adapter.log(installed);
+		.on('error', function(error) {
+			adapter.logError(error);
 			vscode.window.showErrorMessage('bower uninstall failed! View Output window for further details');
+		}).on('log', function(msg) {
+			adapter.log(msg);
 		}).on('end', function(installed) {
 			var installedPackages = Object.keys(installed);
+			if (installedPackages.length === 0){
+				vscode.window.showInformationMessage("No packages installed");
+				return;
+			}
+			
 			var packages = installedPackages.map(item=> { return { 
 				label: item, 
 				description: Array.isArray(installed[item]) ? installed[item][0] : installed[item], 
 				name: item } });
 			displayPackageList(packages);
+		}).on('prompt', function(prompts, callback) {
+			adapter.prompt(prompts, callback);
 		});
+
 
 	function displayPackageList(packages: vscode.QuickPickItem[]) {
 		vscode.window.showQuickPick(packages, { placeHolder: "Select the package to uninstall" }).then(function(item) {
@@ -70,12 +78,13 @@ export default function uninstall(adapter: CodeAdapter, progressIndicator:Progre
 	function uninstallPackage(name: string, options: any) {
 		bower.commands
 			.uninstall([name], options)
-			.on('error', function(ex) {
-				adapter.log(ex);
+			.on('error', function(error) {
+				adapter.logError(error);
 				vscode.window.showErrorMessage('bower uninstall failed! View Output window for further details');
 			}).on('end', function(msg) {
 					vscode.window.showInformationMessage("bower package '" + name + "' successfully uninstalled!");
 			}).on('log', function(msg) {
+				adapter.log(msg);
 			}).on('prompt', function(prompts, callback) {
 				adapter.prompt(prompts, callback);
 			});

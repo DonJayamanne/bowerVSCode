@@ -7,8 +7,6 @@ import ProgressIndicator from './../progressIndicator';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function search(adapter: CodeAdapter, progressIndicator: ProgressIndicator) {
-	var cwd = vscode.workspace.rootPath;
-	process.chdir(cwd);
 	var bower = require('bower');
 
 	search();
@@ -22,15 +20,20 @@ export function search(adapter: CodeAdapter, progressIndicator: ProgressIndicato
 
 			bower.commands
 				.search(searchString)
-				.on('error', function(installed) {
+				.on('error', function(error) {
 					progressIndicator.endTask("bower search");
-					adapter.log(installed);
+					adapter.logError(error);
 					vscode.window.showErrorMessage('bower search failed! View Output window for further details');
+				}).on('log', function(msg) {
+					adapter.log(msg);
 				}).on('end', function(results) {
 					progressIndicator.endTask("bower search");
 					var packages = results.map(item=> { return { label: item.name, description: item.url, name: item.name } });
 					displayPackageList(packages);
+				}).on('prompt', function(prompts, callback) {
+					adapter.prompt(prompts, callback);
 				});
+
 		});
 	}
 
@@ -71,11 +74,13 @@ export function search(adapter: CodeAdapter, progressIndicator: ProgressIndicato
 	function installPackage(name: string, options: any) {
 		progressIndicator.beginTask("bower install");
 		bower.commands
-			.install([name], options)
-			.on('error', function(installed) {
+			.install([name], options, { interactive: true })
+			.on('error', function(error) {
 				progressIndicator.endTask("bower install");
-				adapter.log(installed);
+				adapter.logError(error);
 				vscode.window.showErrorMessage('bower install failed! View Output window for further details');
+			}).on('log', function(msg) {
+				adapter.log(msg);
 			}).on('end', function() {
 				progressIndicator.endTask("bower install");
 				vscode.window.showInformationMessage("bower package '" + name + "' successfully installed!");

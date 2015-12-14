@@ -2,7 +2,7 @@
   "name": "bower",
   "displayName": "Bower",
   "description": "Create bower.json, install, uninstall, update bower packages, etc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "donjayamanne",
   "license": "SEE LICENSE IN LICENSE or README.MD",
   "homepage": "https://github.com/DonJayamanne/bowerVSCode/blob/master/README.md",

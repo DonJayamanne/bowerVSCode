@@ -10,17 +10,80 @@ export default class CodeAdapter {
 
 	private outChannel: OutputChannel;
 	private outBuffer: string = '';
-
+	private messageLevelFormatters = {};
 	constructor() {
 		let self = this;
 
+		this.messageLevelFormatters["conflict"] = this.formatConflict;
+		this.messageLevelFormatters["info"] = this.formatInfo;
+		this.messageLevelFormatters["action"] = this.formatAction;
+
 		this.outChannel = window.createOutputChannel('Bower');
 		this.outChannel.clear();
-		this.outChannel.show();
+	}
+
+	public logError(message: any) {
+		var line = `error: ${message.message}\n    Code - ${message.code}`;
+
+		this.outBuffer += `${line}\n`;
+		this.outChannel.appendLine(line);
+	}
+
+	private formatInfo(message: any) {
+		const prefix = `${message.level}: (${message.id}) `;
+		if (message.id === "json") {
+			var jsonString = JSON.stringify(message.data, null, 4);
+			return `${prefix}${message.message}\n${jsonString}`;
+		}
+		else {
+			return `${prefix}${message.message}`;
+		}
+	}
+
+	private formatAction(message: any) {
+		const prefix = `info: ${message.level}: (${message.id}) `;
+		return `${prefix}${message.message}`;
+	}
+
+	private formatMessage(message: any) {
+		const prefix = `${message.level}: (${message.id}) `;
+		return `${prefix}${message.message}`;
+	}
+
+	private formatConflict(message: any) {
+		var msg = message.message + ':\n';
+		var picks = (<any[]>message.data.picks);
+		var pickCount = 1;
+		picks.forEach((pick) => {
+			let pickMessage = (pickCount++).toString() + "). " + pick.endpoint.name + "#" + pick.endpoint.target;
+			if (pick.pkgMeta._resolution && pick.pkgMeta._resolution.tag) {
+				pickMessage += " which resolved to " + pick.pkgMeta._resolution.tag
+			}
+			if (Array.isArray(pick.dependants) && pick.dependants.length > 0) {
+				pickMessage += " and is required by ";
+				pick.dependants.forEach((dep) => {
+					pickMessage += " " + dep.endpoint.name + "#" + dep.endpoint.target;
+				});
+			}
+			msg += "    " + pickMessage + "\n";
+		});
+
+		var prefix = (message.id === "solved"? "info" : "warn") + `: ${message.level}: (${message.id}) `;
+		return prefix + msg;
 	}
 
 	public log(message: any) {
-		const line = util.format.apply(util, arguments);
+		var line: string = "";
+		if (message && typeof (message.level) === "string") {
+			let formatter: (any) => string = this.formatMessage;
+			if (this.messageLevelFormatters[message.level]) {
+				formatter = this.messageLevelFormatters[message.level];
+			}
+			line = formatter(message);
+		}
+		else {
+			line = util.format(arguments);
+		}
 
 		this.outBuffer += `${line}\n`;
 		this.outChannel.appendLine(line);
@@ -28,6 +91,10 @@ export default class CodeAdapter {
 
 	public clearLog() {
 		this.outChannel.clear();
+	}
+
+	public showLog() {
+		this.outChannel.show();
 	}
 
 	private fixQuestion(question) {
