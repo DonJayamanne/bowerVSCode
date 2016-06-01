@@ -4,7 +4,7 @@
   "description": "Create bower.json, install, uninstall, update bower packages, etc",
   "version": "0.0.3",
   "publisher": "donjayamanne",
-  "license": "SEE LICENSE IN LICENSE or README.MD",
+  "license": "MIT",
   "homepage": "https://github.com/DonJayamanne/bowerVSCode/blob/master/README.md",
   "repository": {
     "type": "git",
