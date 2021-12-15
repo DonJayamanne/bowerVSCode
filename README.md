@@ -4,7 +4,7 @@ Provides access to most of the Bower commands from within Visual Studio Code
 
 Bower Command interactive prompts built into the IDE.
 
-##Features
+## Features
 * Create bower.json using interactive prompts (bower init)
 * Install missing packages from bower.json (bower install)
 * Install specific package (bower install package)
